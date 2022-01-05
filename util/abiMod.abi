@@ -1,0 +1,548 @@
+{
+  "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+  "version": "eosio::abi/1.1",
+  "types": [],
+  "structs": [
+    {
+      "name": "account_row",
+      "base": "",
+      "fields": [
+        {
+          "name": "balance",
+          "type": "asset"
+        }
+      ]
+    },
+    {
+      "name": "autobuyram",
+      "base": "",
+      "fields": [
+        {
+          "name": "payer",
+          "type": "name"
+        },
+        {
+          "name": "watch_account",
+          "type": "name"
+        }
+      ]
+    },
+    {
+      "name": "autopowerup",
+      "base": "",
+      "fields": [
+        {
+          "name": "payer",
+          "type": "name"
+        },
+        {
+          "name": "watch_account",
+          "type": "name"
+        },
+        {
+          "name": "net_frac",
+          "type": "uint64"
+        },
+        {
+          "name": "cpu_frac",
+          "type": "uint64"
+        },
+        {
+          "name": "max_payment",
+          "type": "asset"
+        }
+      ]
+    },
+    {
+      "name": "billaccount",
+      "base": "",
+      "fields": [
+        {
+          "name": "owner",
+          "type": "name"
+        },
+        {
+          "name": "contract",
+          "type": "name"
+        },
+        {
+          "name": "symcode",
+          "type": "symbol_code"
+        }
+      ]
+    },
+    {
+      "name": "clearconfig",
+      "base": "",
+      "fields": []
+    },
+    {
+      "name": "clrwhitelist",
+      "base": "",
+      "fields": []
+    },
+    {
+      "name": "config",
+      "base": "",
+      "fields": [
+        {
+          "name": "fee_pct",
+          "type": "float32"
+        },
+        {
+          "name": "freeze",
+          "type": "bool"
+        },
+        {
+          "name": "per_action_fee",
+          "type": "asset"
+        },
+        {
+          "name": "minimum_fee",
+          "type": "asset"
+        },
+        {
+          "name": "memo",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "dobuyram",
+      "base": "",
+      "fields": [
+        {
+          "name": "payer",
+          "type": "name"
+        },
+        {
+          "name": "receiver",
+          "type": "name"
+        },
+        {
+          "name": "bytes",
+          "type": "uint32"
+        }
+      ]
+    },
+    {
+      "name": "dopowerup",
+      "base": "",
+      "fields": [
+        {
+          "name": "payer",
+          "type": "name"
+        },
+        {
+          "name": "receiver",
+          "type": "name"
+        },
+        {
+          "name": "net_frac",
+          "type": "uint64"
+        },
+        {
+          "name": "cpu_frac",
+          "type": "uint64"
+        },
+        {
+          "name": "max_payment",
+          "type": "asset"
+        }
+      ]
+    },
+    {
+      "name": "extended_symbol",
+      "base": "",
+      "fields": [
+        {
+          "name": "sym",
+          "type": "symbol"
+        },
+        {
+          "name": "contract",
+          "type": "name"
+        }
+      ]
+    },
+    {
+      "name": "logbuyram",
+      "base": "",
+      "fields": [
+        {
+          "name": "message",
+          "type": "string"
+        },
+        {
+          "name": "action",
+          "type": "name"
+        },
+        {
+          "name": "payer",
+          "type": "name"
+        },
+        {
+          "name": "receiver",
+          "type": "name"
+        },
+        {
+          "name": "cost",
+          "type": "asset"
+        },
+        {
+          "name": "fee",
+          "type": "asset"
+        },
+        {
+          "name": "total_billed",
+          "type": "asset"
+        },
+        {
+          "name": "received_ram_kb",
+          "type": "float32"
+        }
+      ]
+    },
+    {
+      "name": "logpowerup",
+      "base": "",
+      "fields": [
+        {
+          "name": "message",
+          "type": "string"
+        },
+        {
+          "name": "action",
+          "type": "name"
+        },
+        {
+          "name": "payer",
+          "type": "name"
+        },
+        {
+          "name": "receiver",
+          "type": "name"
+        },
+        {
+          "name": "cost",
+          "type": "asset"
+        },
+        {
+          "name": "fee",
+          "type": "asset"
+        },
+        {
+          "name": "total_billed",
+          "type": "asset"
+        },
+        {
+          "name": "received_cpu_ms",
+          "type": "float32"
+        },
+        {
+          "name": "received_net_kb",
+          "type": "float32"
+        }
+      ]
+    },
+    {
+      "name": "open",
+      "base": "",
+      "fields": [
+        {
+          "name": "owner",
+          "type": "name"
+        },
+        {
+          "name": "extsymbol",
+          "type": "extended_symbol"
+        },
+        {
+          "name": "ram_payer",
+          "type": "name"
+        }
+      ]
+    },
+    {
+      "name": "rmwatchaccnt",
+      "base": "",
+      "fields": [
+        {
+          "name": "owner",
+          "type": "name"
+        },
+        {
+          "name": "watch_account",
+          "type": "name"
+        }
+      ]
+    },
+    {
+      "name": "setconfig",
+      "base": "",
+      "fields": [
+        {
+          "name": "cfg",
+          "type": "config"
+        }
+      ]
+    },
+    {
+      "name": "state",
+      "base": "",
+      "fields": [
+        {
+          "name": "contract",
+          "type": "name"
+        },
+        {
+          "name": "balance",
+          "type": "asset"
+        },
+        {
+          "name": "receiver",
+          "type": "name"
+        },
+        {
+          "name": "action",
+          "type": "name"
+        },
+        {
+          "name": "received_cpu_ms",
+          "type": "float32"
+        },
+        {
+          "name": "received_net_kb",
+          "type": "float32"
+        },
+        {
+          "name": "received_ram_kb",
+          "type": "float32"
+        },
+        {
+          "name": "memo",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "tknwhitelist_row",
+      "base": "",
+      "fields": [
+        {
+          "name": "contract",
+          "type": "name"
+        },
+        {
+          "name": "max_deposit",
+          "type": "asset"
+        }
+      ]
+    },
+    {
+      "name": "updatememo",
+      "base": "",
+      "fields": [
+        {
+          "name": "memo",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "watchaccount",
+      "base": "",
+      "fields": [
+        {
+          "name": "owner",
+          "type": "name"
+        },
+        {
+          "name": "watch_data",
+          "type": "watchlist_row"
+        }
+      ]
+    },
+    {
+      "name": "watchlist_row",
+      "base": "",
+      "fields": [
+        {
+          "name": "account",
+          "type": "name"
+        },
+        {
+          "name": "min_cpu_ms",
+          "type": "uint16"
+        },
+        {
+          "name": "powerup_quantity_ms",
+          "type": "uint16"
+        },
+        {
+          "name": "min_kb_ram",
+          "type": "uint16"
+        },
+        {
+          "name": "buy_ram_quantity_kb",
+          "type": "uint16"
+        },
+        {
+          "name": "active",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "whitelisttkn",
+      "base": "",
+      "fields": [
+        {
+          "name": "tknwhitelist",
+          "type": "tknwhitelist_row"
+        }
+      ]
+    },
+    {
+      "name": "withdraw",
+      "base": "",
+      "fields": [
+        {
+          "name": "owner",
+          "type": "name"
+        },
+        {
+          "name": "quantity",
+          "type": "asset"
+        },
+        {
+          "name": "receiver",
+          "type": "name"
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "name": "autobuyram",
+      "type": "autobuyram",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "autopowerup",
+      "type": "autopowerup",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "billaccount",
+      "type": "billaccount",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "clearconfig",
+      "type": "clearconfig",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "clrwhitelist",
+      "type": "clrwhitelist",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "dobuyram",
+      "type": "dobuyram",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "dopowerup",
+      "type": "dopowerup",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "logbuyram",
+      "type": "logbuyram",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "logpowerup",
+      "type": "logpowerup",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "open",
+      "type": "open",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "rmwatchaccnt",
+      "type": "rmwatchaccnt",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "setconfig",
+      "type": "setconfig",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "updatememo",
+      "type": "updatememo",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "watchaccount",
+      "type": "watchaccount",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "whitelisttkn",
+      "type": "whitelisttkn",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "withdraw",
+      "type": "withdraw",
+      "ricardian_contract": ""
+    }
+  ],
+  "tables": [
+    {
+      "name": "account",
+      "type": "account_row",
+      "index_type": "i64",
+      "key_names": [],
+      "key_types": []
+    },
+    {
+      "name": "config",
+      "type": "config",
+      "index_type": "i64",
+      "key_names": [],
+      "key_types": []
+    },
+    {
+      "name": "state",
+      "type": "state",
+      "index_type": "i64",
+      "key_names": [],
+      "key_types": []
+    },
+    {
+      "name": "tknwhitelist",
+      "type": "tknwhitelist_row",
+      "index_type": "i64",
+      "key_names": [],
+      "key_types": []
+    },
+    {
+      "name": "watchlist",
+      "type": "watchlist_row",
+      "index_type": "i64",
+      "key_names": [],
+      "key_types": []
+    }
+  ],
+  "ricardian_clauses": [],
+  "variants": [],
+  "error_messages": [],
+  "abi_extensions": []
+}
