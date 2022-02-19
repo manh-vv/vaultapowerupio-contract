@@ -15,23 +15,12 @@
 // #include <eosio/crypto.hpp>
 #define SECONDS_WEEK 604800
 
-#if defined(DEBUG)
-#define SECONDS_DAY 60
-#define TOKEN_CONTRACT "token.boid"
-#else
-#define SECONDS_DAY 86400
-#define TOKEN_CONTRACT "boidcomtoken"
-
-#endif
-
-#define MAX_POOL_POWER 1000000
-
 using namespace eosio;
 using namespace std;
 CONTRACT eospowerupio: public contract {
  public:
   using contract::contract;
-  //Structs
+  // Structs
 
   TABLE account_row {
     asset balance;
@@ -58,6 +47,21 @@ CONTRACT eospowerupio: public contract {
   };
   using tknwhitelist_table = multi_index<"tknwhitelist"_n, tknwhitelist_row>;
 
+  TABLE referrals_row {
+    name payer;
+    name referrer;
+    uint64_t primary_key() const { return payer.value; };
+    uint64_t by_referrer() const { return referrer.value; };
+  };
+  using referrals_table = multi_index<"referrals"_n, referrals_row, indexed_by<"byreferrer"_n, const_mem_fun<referrals_row, uint64_t, &referrals_row::by_referrer>>>;
+
+  TABLE referralfees_row {
+    name referrer;
+    asset unclaimed_fees;
+    uint64_t primary_key() const { return referrer.value; };
+  };
+  using referralfees_table = multi_index<"referralfees"_n, referralfees_row>;
+
   TABLE state {
     name contract;
     asset balance;
@@ -79,7 +83,19 @@ CONTRACT eospowerupio: public contract {
   };
   typedef singleton<"config"_n, config> config_table;
 
-  //Actions
+  struct staked_row {  // scope is user account name
+    uint32_t template_id;
+    uint64_t asset_id;
+    eosio::time_point_sec locked_until;
+    uint64_t primary_key() const { return (uint64_t)template_id; }
+  };
+  typedef multi_index<"staked"_n, staked_row> staked_table;
+
+  // TABLE invited_row {
+  //   uint64_t primary_key() const { return (uint64_t)template_id; }
+  // }
+
+  // Actions
   ACTION withdraw(const name owner, const asset quantity, const name receiver);
   ACTION whitelisttkn(const tknwhitelist_row tknwhitelist);
   ACTION dopowerup(const name payer, const name receiver, const uint64_t net_frac, const uint64_t cpu_frac, const asset max_payment);
@@ -95,11 +111,13 @@ CONTRACT eospowerupio: public contract {
   ACTION logbuyram(string message, name action, name payer, name receiver, asset cost, asset fee, asset total_billed, float received_ram_kb);
   ACTION clearconfig();
   ACTION updatememo(string memo);
+  ACTION setreferrer(name account, name referrer);
+  ACTION claimreffees(name referrer);
 
   using logpowerup_action = action_wrapper<"logpowerup"_n, &eospowerupio::logpowerup>;
   using logbuyram_action = action_wrapper<"logbuyram"_n, &eospowerupio::logbuyram>;
 
-  //Functions
+  // Functions
   [[eosio::on_notify("*::transfer")]] void deposit(const name from, const name to, const asset quantity, const std::string memo);
   void check_tknwhitelist(symbol sym, name token_contract);
 
@@ -124,8 +142,14 @@ CONTRACT eospowerupio: public contract {
 #endif
 
  private:
+  uint32_t bronze_template_id = 3648;
+  uint32_t silver_template_id = 3649;
+  uint32_t gold_template_id = 3650;
+  name nft_contract = name("powerup.nfts");
   void check_open(const name contract, const name account, const symbol_code symcode);
   void save_state(const state new_state);
   void sub_balance(const name& owner, const asset& value);
+  void add_referralfees(const name& owner, const asset& value);
+  void sub_referralfees(const name& owner, const asset& value);
   void add_balance(const name& owner, const asset& value, const name& ram_payer, const bool& enforce_max);
 };

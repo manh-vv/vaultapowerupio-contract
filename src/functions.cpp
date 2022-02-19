@@ -22,7 +22,6 @@ void eospowerupio::add_balance(const name& owner, const asset& value, const name
   tknwhitelist_table tknwhitelist_t(get_self(), get_self().value);
   tknwhitelist_row whitelisted = *tknwhitelist_t.require_find(value.symbol.code().raw(), "token not whitelisted");
 
-
   if(account_itr == account_t.end()) {
     // check(false,)
     // if(enforce_max) check(value.amount >= 10000,"must deposit at least 1 EOS ");
@@ -40,7 +39,7 @@ void eospowerupio::add_balance(const name& owner, const asset& value, const name
 
   // make sure the balance does not exceed the maximum.
   asset user_bal = account_t.get(value.symbol.code().raw()).balance;
-  check(user_bal <= whitelisted.max_deposit,"user balance exceeds the maximum balance: "+ whitelisted.max_deposit.to_string() );
+  check(user_bal <= whitelisted.max_deposit, "user balance exceeds the maximum balance: " + whitelisted.max_deposit.to_string());
 }
 
 void eospowerupio::check_tknwhitelist(symbol sym, name token_contract) {
@@ -56,11 +55,31 @@ void eospowerupio::check_open(const name contract, const name account, const sym
   check(itr != _accounts.end(), get_self().to_string() + ": " + account.to_string() + " account must have " + symcode.to_string() + " `open` balance");
 }
 
-void eospowerupio::save_state( const state new_state) {
+void eospowerupio::save_state(const state new_state) {
   // can only be created once (to prevent double entry attacks)
   state_table _state(get_self(), get_self().value);
   check(!_state.exists(), get_self().to_string() + ": balance already exists, must now use `checkbalance`");
 
   // save contract balance
   _state.set(new_state, get_self());
+}
+
+void eospowerupio::add_referralfees(const name& owner, const asset& value) {
+  referralfees_table referralfees_t(get_self(), get_self().value);
+  auto referralfees_itr = referralfees_t.find(owner.value);
+  if(referralfees_itr == referralfees_t.end()) {
+    referralfees_t.emplace(get_self(), [&](referralfees_row& row) {
+      row.referrer = owner;
+      row.unclaimed_fees = value;
+    });
+  } else {
+    referralfees_t.modify(referralfees_itr, get_self(), [&](referralfees_row& row) {
+      row.unclaimed_fees += value;
+    });
+  }
+}
+void eospowerupio::sub_referralfees(const name& owner, const asset& value) {
+  // if(value.amount == 0) return;
+  // referralfees_table referralfees_t(get_self(), get_self().value);
+  // auto referralfees_itr = referralfees_t.require_find(owner.value, "referrer funds don't exist");
 }

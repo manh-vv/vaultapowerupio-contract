@@ -128,8 +128,8 @@ ACTION eospowerupio::billaccount(const name owner, const name contract, const sy
   const asset base_cost = cost;
   asset fee = asset(0, cost.symbol);
 
-  if(owner != name("eospowerupio")) {
-    //calculate fee
+  if(owner != get_self()) {
+    // calculate fee
     const config conf = config_t.get();
     check(!conf.freeze, "contract is currently frozen, try again later.");
     float fee_pct = conf.fee_pct;
@@ -137,21 +137,27 @@ ACTION eospowerupio::billaccount(const name owner, const name contract, const sy
     // asset static_fee = asset(1,symbol(symbol_code("EOS"),4));
 
     float fee_amt = max((float(cost.amount) * fee_pct / 100) + static_fee.amount, float(conf.minimum_fee.amount));
-    //TODO If I change the payment token, I will need to modify this
+    // TODO If I change the payment token, I will need to modify this
     fee = asset(int64_t(fee_amt), cost.symbol);
+    auto contractCut = fee;
+    referrals_table referrals_t(get_self(), get_self().value);
+    auto referrals_itr = referrals_t.find(owner.value);
+    if(referrals_itr != referrals_t.end()) {
+      auto& referrer = referrals_itr->referrer;
+      staked_table staked_t(nft_contract, referrer.value);
+      auto staked_itr = staked_t.find((uint64_t)silver_template_id);
+      if(staked_itr != staked_t.end()) {
+        fee *= .9;
+        contractCut = fee / 2;
+        add_referralfees(referrer, contractCut);
+      }
+    }
     cost += fee;
-
-    // add fee to contract account
-    add_balance(get_self(), fee, get_self(), false);
+    add_balance(get_self(), contractCut, get_self(), false);
   }
-
-  // take total cost from owner internal balance
   sub_balance(owner, cost);
-
-  // reset the temp state table
   state_t.remove();
 
-  // send notifications
   if(state.action == name("dopowerup")) {
     logpowerup_action log_action(get_self(), {get_self(), "active"_n});
     log_action.send(state.memo, state.action, owner, state.receiver, base_cost, fee, cost, state.received_cpu_ms, state.received_net_kb);
@@ -226,4 +232,38 @@ ACTION eospowerupio::updatememo(string memo) {
   config cfg = config_t.get();
   cfg.memo = memo;
   config_t.set(cfg, get_self());
+}
+
+ACTION eospowerupio::setreferrer(name account, name referrer) {
+  require_auth(account);
+
+  account_table account_t(get_self(), get_self().value);
+  account_t.require_find(account.value, "Must deposit funds into your PowerUp account first before adding a referrer.");
+
+  staked_table staked_t(nft_contract, referrer.value);
+  staked_t.require_find((uint64_t)silver_template_id, "Not a valid referrer, no silver NFT stake found.");
+
+  referrals_table referrals_t(get_self(), get_self().value);
+  auto referrals_itr = referrals_t.find(account.value);
+
+  if(referrals_itr == referrals_t.end()) {
+    referrals_t.emplace(get_self(), [&](referrals_row& row) {
+      row.payer = account;
+      row.referrer = referrer;
+    });
+  } else {
+    referrals_t.modify(referrals_itr, get_self(), [&](referrals_row& row) {
+      row.referrer = referrer;
+    });
+  }
+}
+
+ACTION eospowerupio::claimreffees(name referrer) {
+  check(has_auth(referrer) || has_auth(get_self()), "not authorized");
+  referralfees_table referralfees_t(get_self(), get_self().value);
+  auto referralfees_itr = referralfees_t.require_find(referrer.value, "No fees claimable for this account");
+  auto& quantity = referralfees_itr->unclaimed_fees;
+  token::transfer_action transfer("eosio.token"_n, {get_self(), "active"_n});
+  transfer.send(get_self(), referrer, quantity, "claim referral fees");
+  referralfees_t.erase(referralfees_itr);
 }
