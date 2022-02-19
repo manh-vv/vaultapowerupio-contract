@@ -147,7 +147,7 @@ ACTION eospowerupio::billaccount(const name owner, const name contract, const sy
       staked_table staked_t(nft_contract, referrer.value);
       auto staked_itr = staked_t.find((uint64_t)silver_template_id);
       if(staked_itr != staked_t.end()) {
-        fee *= .9;
+        fee *= (float).9;
         contractCut = fee / 2;
         add_referralfees(referrer, contractCut);
       }
