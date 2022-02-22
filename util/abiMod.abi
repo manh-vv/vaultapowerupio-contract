@@ -72,6 +72,16 @@
       ]
     },
     {
+      "name": "claimreffees",
+      "base": "",
+      "fields": [
+        {
+          "name": "referrer",
+          "type": "name"
+        }
+      ]
+    },
+    {
       "name": "clearconfig",
       "base": "",
       "fields": []
@@ -264,6 +274,34 @@
       ]
     },
     {
+      "name": "referralfees_row",
+      "base": "",
+      "fields": [
+        {
+          "name": "referrer",
+          "type": "name"
+        },
+        {
+          "name": "unclaimed_fees",
+          "type": "asset"
+        }
+      ]
+    },
+    {
+      "name": "referrals_row",
+      "base": "",
+      "fields": [
+        {
+          "name": "payer",
+          "type": "name"
+        },
+        {
+          "name": "referrer",
+          "type": "name"
+        }
+      ]
+    },
+    {
       "name": "rmwatchaccnt",
       "base": "",
       "fields": [
@@ -284,6 +322,20 @@
         {
           "name": "cfg",
           "type": "config"
+        }
+      ]
+    },
+    {
+      "name": "setreferrer",
+      "base": "",
+      "fields": [
+        {
+          "name": "account",
+          "type": "name"
+        },
+        {
+          "name": "referrer",
+          "type": "name"
         }
       ]
     },
@@ -439,6 +491,11 @@
       "ricardian_contract": ""
     },
     {
+      "name": "claimreffees",
+      "type": "claimreffees",
+      "ricardian_contract": ""
+    },
+    {
       "name": "clearconfig",
       "type": "clearconfig",
       "ricardian_contract": ""
@@ -484,6 +541,11 @@
       "ricardian_contract": ""
     },
     {
+      "name": "setreferrer",
+      "type": "setreferrer",
+      "ricardian_contract": ""
+    },
+    {
       "name": "updatememo",
       "type": "updatememo",
       "ricardian_contract": ""
@@ -515,6 +577,20 @@
     {
       "name": "config",
       "type": "config",
+      "index_type": "i64",
+      "key_names": [],
+      "key_types": []
+    },
+    {
+      "name": "referralfees",
+      "type": "referralfees_row",
+      "index_type": "i64",
+      "key_names": [],
+      "key_types": []
+    },
+    {
+      "name": "referrals",
+      "type": "referrals_row",
       "index_type": "i64",
       "key_names": [],
       "key_types": []

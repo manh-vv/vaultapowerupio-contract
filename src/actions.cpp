@@ -140,24 +140,30 @@ ACTION eospowerupio::billaccount(const name owner, const name contract, const sy
     // TODO If I change the payment token, I will need to modify this
     fee = asset(int64_t(fee_amt), cost.symbol);
     auto contractCut = fee;
-    referrals_table referrals_t(get_self(), get_self().value);
-    auto referrals_itr = referrals_t.find(owner.value);
-    if(referrals_itr != referrals_t.end()) {
-      auto& referrer = referrals_itr->referrer;
-      staked_table staked_t(nft_contract, referrer.value);
-      auto staked_itr = staked_t.find((uint64_t)silver_template_id);
-      if(staked_itr != staked_t.end()) {
-        fee *= (float).9;
-        contractCut = fee / 2;
-        add_referralfees(referrer, contractCut);
+    staked_table staked_t(nft_contract, owner.value);
+    auto gold_staked_itr = staked_t.find((uint64_t)gold_template_id);
+    if(gold_staked_itr != staked_t.end()) {
+      fee.amount = 0;
+      contractCut.amount = 0;
+    } else {
+      referrals_table referrals_t(get_self(), get_self().value);
+      auto referrals_itr = referrals_t.find(owner.value);
+      if(referrals_itr != referrals_t.end()) {
+        auto& referrer = referrals_itr->referrer;
+        staked_table staked_t(nft_contract, referrer.value);
+        auto staked_itr = staked_t.find((uint64_t)silver_template_id);
+        if(staked_itr != staked_t.end()) {
+          fee.amount = max(fee.amount *= (float).9, conf.minimum_fee.amount);
+          contractCut = fee / 2;
+          add_referralfees(referrer, contractCut);
+        }
       }
     }
     cost += fee;
-    add_balance(get_self(), contractCut, get_self(), false);
+    if(contractCut.amount > 0) add_balance(get_self(), contractCut, get_self(), false);
   }
   sub_balance(owner, cost);
   state_t.remove();
-
   if(state.action == name("dopowerup")) {
     logpowerup_action log_action(get_self(), {get_self(), "active"_n});
     log_action.send(state.memo, state.action, owner, state.receiver, base_cost, fee, cost, state.received_cpu_ms, state.received_net_kb);
@@ -237,8 +243,8 @@ ACTION eospowerupio::updatememo(string memo) {
 ACTION eospowerupio::setreferrer(name account, name referrer) {
   require_auth(account);
 
-  account_table account_t(get_self(), get_self().value);
-  account_t.require_find(account.value, "Must deposit funds into your PowerUp account first before adding a referrer.");
+  account_table account_t(get_self(), account.value);
+  account_t.require_find(symbol_code("EOS").raw(), "Must deposit funds into your PowerUp account first before adding a referrer.");
 
   staked_table staked_t(nft_contract, referrer.value);
   staked_t.require_find((uint64_t)silver_template_id, "Not a valid referrer, no silver NFT stake found.");

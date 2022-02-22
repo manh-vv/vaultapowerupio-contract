@@ -2,7 +2,8 @@ const { setAbiAction, setCodeAction } = require('./lib/encodeContractData')
 const conf = require('../eosioConfig')
 const fs = require('fs-extra')
 const env = require('../.env.js')
-
+const ms = require('ms')
+const sleep = (ms) => new Promise(res => setTimeout(res, ms))
 
 const methods = {
 
@@ -45,7 +46,7 @@ const methods = {
     console.log("Pushing ABI");
     const result = await api.transact({ actions: [setAbiAction(`../build/${type}/${conf.contractName}.abi`, authorization)] }, tapos).catch(err => console.log(err.toString()))
     if (result) console.log('https://bloks.io/transaction/' + result.transaction_id)
-
+    await sleep(ms('5s'))
     console.log("Pushing WASM");
     const result2 = await api.transact({ actions: [setCodeAction(`../build/${type}/${conf.contractName}.wasm`, authorization)] }, tapos).catch(err => console.log(err.toString()))
     if (result2) console.log('https://bloks.io/transaction/' + result2.transaction_id)
@@ -63,3 +64,11 @@ if (require.main == module) {
     console.log(JSON.stringify(Object.keys(methods), null, 2))
   }
 }
+// function sleep(arg0) {
+//   throw new Error('Function not implemented.')
+// }
+
+// function ms(arg0) {
+//   throw new Error('Function not implemented.')
+// }
+

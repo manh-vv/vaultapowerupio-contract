@@ -51,10 +51,10 @@ const methods = {
 
     await doAction('autopowerup', { payer, watch_account, cpu_frac, net_frac, max_payment })
   },
-  async setconfig(fee_pct, freeze, per_action_fee, memo) {
+  async setconfig(fee_pct, freeze, per_action_fee, minimum_fee, memo) {
     if (freeze == "true") freeze = true
     else freeze = false
-    await doAction('setconfig', { cfg: { fee_pct: parseFloat(fee_pct), freeze, per_action_fee, memo } })
+    await doAction('setconfig', { cfg: { fee_pct: parseFloat(fee_pct), freeze, minimum_fee, per_action_fee, memo } })
   },
   async clrwhitelist() {
     await doAction('clrwhitelist')
