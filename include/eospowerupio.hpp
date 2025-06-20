@@ -3,7 +3,6 @@
 #if __INTELLISENSE__
 #pragma diag_suppress 2486
 #endif
-// #define CHAIN "kylin"
 #include <algorithm>
 #include <common.hpp>
 #include <eosio.token.hpp>

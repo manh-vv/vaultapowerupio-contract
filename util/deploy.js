@@ -1,64 +1,48 @@
-const { setAbiAction, setCodeAction } = require('./lib/encodeContractData')
-const conf = require('../eosioConfig')
-const fs = require('fs-extra')
-const env = require('../.env.js')
-const ms = require('ms')
-const sleep = (ms) => new Promise(res => setTimeout(res, ms))
+const { setAbiAction, setCodeAction } = require("./lib/encodeContractData")
+const conf = require("../eosioConfig")
+const env = require("../.env.js")
+const ms = require("ms")
+const sleep = (ms) => new Promise((res) => setTimeout(res, ms))
+
+const methodHelper = async (chain, type) => {
+  const { api, tapos } = require("./lib/eosjs")(env.keys[chain], conf.endpoints[chain][0])
+
+  const authorization = [{ actor: conf.accountName[chain], permission: "active" }]
+  if (!type) type = "debug"
+
+  console.log("Pushing ABI")
+  const result = await api
+    .transact({ actions: [setAbiAction(`../build/${type}/${conf.contractName}.abi`, authorization)] }, tapos)
+    .catch((err) => console.log(err.toString()))
+  if (result) console.log(`${conf.explorers[chain]}/transaction/${result.transaction_id}`)
+
+  await sleep(ms("5s"))
+
+  console.log("Pushing WASM")
+  const result2 = await api
+    .transact({ actions: [setCodeAction(`../build/${type}/${conf.contractName}.wasm`, authorization)] }, tapos)
+    .catch((err) => console.log(err.toString()))
+  if (result2) console.log(`${conf.explorers[chain]}/transaction/${result2.transaction_id}`)
+}
 
 const methods = {
-
   async kylin(type) {
-    const { api, tapos } = require('./lib/eosjs')(env.keys.kylin, conf.endpoints.kylin[0])
-
-    const authorization = [{ actor: conf.accountName.kylin, permission: 'active' }]
-    if (!type) type = 'debug'
-
-    console.log("Pushing ABI");
-    const result = await api.transact({ actions: [setAbiAction(`../build/${type}/${conf.contractName}.abi`, authorization)] }, tapos).catch(err => console.log(err.toString()))
-    if (result) console.log('https://kylin.bloks.io/transaction/' + result.transaction_id)
-
-    console.log("Pushing WASM");
-    const result2 = await api.transact({ actions: [setCodeAction(`../build/${type}/${conf.contractName}.wasm`, authorization)] }, tapos).catch(err => console.log(err.toString()))
-    if (result2) console.log('https://kylin.bloks.io/transaction/' + result2.transaction_id)
-
+    await methodHelper("kylin", type)
   },
   async jungle(type) {
-    const { api, tapos } = require('./lib/eosjs')(env.keys.jungle, conf.endpoints.jungle[0])
-
-    const authorization = [{ actor: conf.accountName.jungle, permission: 'active' }]
-    if (!type) type = 'debug'
-
-    console.log("Pushing ABI");
-    const result = await api.transact({ actions: [setAbiAction(`../build/${type}/${conf.contractName}.abi`, authorization)] }, tapos).catch(err => console.log(err.toString()))
-    if (result) console.log('https://jungle3.bloks.io/transaction/' + result.transaction_id)
-
-    console.log("Pushing WASM");
-    const result2 = await api.transact({ actions: [setCodeAction(`../build/${type}/${conf.contractName}.wasm`, authorization)] }, tapos).catch(err => console.log(err.toString()))
-    if (result2) console.log('https://jungle3.bloks.io/transaction/' + result2.transaction_id)
-
+    await methodHelper("jungle", type)
   },
   async eos(type) {
-    const { api, tapos } = require('./lib/eosjs')(env.keys.eos, conf.endpoints.eos[0])
-
-    const authorization = [{ actor: conf.accountName.eos, permission: 'active' }]
-    if (!type) type = 'debug'
-
-    console.log("Pushing ABI");
-    const result = await api.transact({ actions: [setAbiAction(`../build/${type}/${conf.contractName}.abi`, authorization)] }, tapos).catch(err => console.log(err.toString()))
-    if (result) console.log('https://bloks.io/transaction/' + result.transaction_id)
-    await sleep(ms('5s'))
-    console.log("Pushing WASM");
-    const result2 = await api.transact({ actions: [setCodeAction(`../build/${type}/${conf.contractName}.wasm`, authorization)] }, tapos).catch(err => console.log(err.toString()))
-    if (result2) console.log('https://bloks.io/transaction/' + result2.transaction_id)
-
-  }
+    await methodHelper("eos", type)
+  },
 }
 
 if (require.main == module) {
-  if (Object.keys(methods).find(el => el === process.argv[2])) {
+  if (Object.keys(methods).find((el) => el === process.argv[2])) {
     console.log("Starting:", process.argv[2])
-    methods[process.argv[2]](...process.argv.slice(3)).catch((error) => console.error(error.toString()))
-      .then((result) => console.log('Finished'))
+    methods[process.argv[2]](...process.argv.slice(3))
+      .catch((error) => console.error(error.toString()))
+      .then((result) => console.log("Finished"))
   } else {
     console.log("Available Commands:")
     console.log(JSON.stringify(Object.keys(methods), null, 2))
@@ -71,4 +55,3 @@ if (require.main == module) {
 // function ms(arg0) {
 //   throw new Error('Function not implemented.')
 // }
-
