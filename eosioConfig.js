@@ -3,7 +3,7 @@ module.exports = {
   endpoints: {
     eos: ['https://eos.greymass.com', 'https://eos.eosn.io', 'https://eos.dfuse.eosnation.io/'],
     kylin: ['https://kylin.eosn.io', 'https://kylin.eossweden.org'],
-    jungle: ['https://jungle4.cryptolions.io']
+    jungle: ['https://jungle4.genereos.io', 'https://jungle4.cryptolions.io']
   },
   explorers: {
     eos: 'https://coffe.bloks.io',

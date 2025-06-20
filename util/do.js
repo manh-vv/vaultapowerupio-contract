@@ -1,17 +1,15 @@
 const conf = require('../eosioConfig')
 const env = require('../.env.js')
-const { api, tapos } = require('./lib/eosjs')(env.keys[env.defaultChain], conf.endpoints[env.defaultChain][1])
 const contractAccount = conf.accountName[env.defaultChain]
 var watchAccountSample = require('./lib/sample_watchaccount')
-function chainName() {
-  if (env.defaultChain == 'jungle') return 'jungle3'
-  else return env.defaultChain
-}
 
 async function doAction(name, data, account, auth) {
+  const chain = env.defaultChain
+  const { api, tapos } = require('./lib/eosjs')(env.keys[chain], conf.endpoints[chain][1])
+
   try {
     if (!data) data = {}
-    if (!account) account = contractAccount
+    if (!account) account = conf.accountName[env.defaultChain]
     if (!auth) auth = account
     console.log("Do Action:", name, data)
     const authorization = [{ actor: auth, permission: 'active' }]
@@ -20,7 +18,7 @@ async function doAction(name, data, account, auth) {
       actions: [{ account, name, data, authorization }]
     }, tapos)
     const txid = result.transaction_id
-    console.log(`https://${chainName()}.bloks.io/transaction/` + txid)
+    console.log(`${conf.explorers[env.defaultChain]}/transaction/${txid}`)
     // console.log(txid)
     return result
   } catch (error) {
@@ -30,6 +28,7 @@ async function doAction(name, data, account, auth) {
 }
 
 const methods = {
+  doAction,
   async whitelisttkn(contract, max_deposit) {
     await doAction('whitelisttkn', { tknwhitelist: { contract, max_deposit } })
   },

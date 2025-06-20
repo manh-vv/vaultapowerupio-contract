@@ -1,35 +1,7 @@
 const conf = require('../eosioConfig')
 const env = require('../.env.js')
-const { api, tapos } = require('./lib/eosjs')(env.keys[env.defaultChain], conf.endpoints[env.defaultChain][0])
+const { doAction } = require('./do.js')
 const contractAccount = conf.accountName[env.defaultChain]
-const contractActions = require('./do.js')
-
-function chainName() {
-  if (env.defaultChain == 'jungle') return 'jungle3'
-  else return env.defaultChain
-}
-
-async function doAction(name, data, account, auth,permission) {
-  try {
-    if (!data) data = {}
-    if (!account) account = contractAccount
-    if (!auth) auth = account
-    if(!permission) permission = 'active'
-    console.log("Do Action:", name, data)
-    const authorization = [{ actor: auth, permission }]
-    const result = await api.transact({
-      // "delay_sec": 0,
-      actions: [{ account, name, data, authorization }]
-    }, tapos)
-    const txid = result.transaction_id
-    console.log(`https://${chainName()}.bloks.io/transaction/` + txid)
-    // console.log(txid)
-    return result
-  } catch (error) {
-    console.error(error.toString())
-    if (error.json) console.error("Logs:", error.json?.error?.details[1]?.message)
-  }
-}
 
 const methods = {
   async setConfig(){
