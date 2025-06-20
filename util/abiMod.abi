@@ -1,6 +1,6 @@
 {
   "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
-  "version": "eosio::abi/1.1",
+  "version": "eosio::abi/1.2",
   "types": [],
   "structs": [
     {
@@ -596,6 +596,13 @@
       "key_types": []
     },
     {
+      "name": "staked",
+      "type": "staked_row",
+      "index_type": "i64",
+      "key_names": [],
+      "key_types": []
+    },
+    {
       "name": "state",
       "type": "state",
       "index_type": "i64",
@@ -619,6 +626,8 @@
   ],
   "ricardian_clauses": [],
   "variants": [],
+  "action_results": [],
   "error_messages": [],
-  "abi_extensions": []
+  "abi_extensions": [],
+  "kv_tables": []
 }
