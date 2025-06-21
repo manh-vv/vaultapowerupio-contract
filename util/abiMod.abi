@@ -340,6 +340,24 @@
       ]
     },
     {
+      "name": "staked_row",
+      "base": "",
+      "fields": [
+        {
+          "name": "template_id",
+          "type": "uint32"
+        },
+        {
+          "name": "asset_id",
+          "type": "uint64"
+        },
+        {
+          "name": "locked_until",
+          "type": "time_point_sec"
+        }
+      ]
+    },
+    {
       "name": "state",
       "base": "",
       "fields": [

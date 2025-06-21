@@ -82,7 +82,7 @@ CONTRACT eospowerupio: public contract {
   };
   typedef singleton<"config"_n, config> config_table;
 
-  struct staked_row {  // scope is user account name
+  TABLE staked_row {  // scope is user account name
     uint32_t template_id;
     uint64_t asset_id;
     eosio::time_point_sec locked_until;
